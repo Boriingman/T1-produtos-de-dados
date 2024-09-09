@@ -1,6 +1,6 @@
 tabela: dados_bsa.csv # base de dados
 dados: novas_observacoes.json # dados a serem preditos
-modelo: robusto # bayesiano ou robusto
+modelo: bayesiano # bayesiano ou robusto
 preditores:
   - professores
   - despesa_por_aluno

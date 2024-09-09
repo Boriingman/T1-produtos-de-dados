@@ -40,6 +40,8 @@ modelo_bayesiano <- function(resposta, preditores){
     save.to = NA
   )
   
+  Sys.sleep(3)
+  
   fit.post.chain2 <- Gibbs.regression(
     X, y,
     M = config$M,

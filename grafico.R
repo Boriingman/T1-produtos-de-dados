@@ -1,5 +1,7 @@
 grafico_bayesiano <- function(preditores, valores_observados, valores_preditos_json){
   set.seed(23161719)
+  modelo_bayesiano <- readRDS("saidas/modelo_bayesiano.rds")
+  n_samples <- nrow(modelo_bayesiano)
   # Para fazer eixo X do modelo bayesiano:
   X <- do.call(cbind, lapply(preditores, function(col) dados[[col]]))
   y_pred_grafico <- matrix(0, nrow = n_samples, ncol = nrow(X))
@@ -18,7 +20,7 @@ grafico_bayesiano <- function(preditores, valores_observados, valores_preditos_j
     theme_minimal()
   
   #Salvar o gráfico no formato PDF na pasta 'saidas'
-  ggsave("saidas/grafico.pdf", grafico, width = 8, height = 6)
+  ggsave("saidas/grafico.pdf", grafico_bayes, width = 8, height = 6)
 }
 
 grafico_robusto <- function(valores_observados, valores_preditos_json){
