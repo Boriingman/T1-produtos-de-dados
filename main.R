@@ -25,17 +25,18 @@ dados <- read_csv2(glue("entradas/{config$tabela}"))
 preditores <- config$preditores
 resposta <- config$resposta
 
-caminho <-glue("entradas/{config$dados}")
+caminho <- glue("entradas/{config$dados}")
 novos_preditores <- fromJSON(caminho)
-valores_preditos_json <- fromJSON("saidas/predicoes.json")
 
 if(config$modelo == "bayesiano"){
   modelo_bayesiano(resposta, preditores)
   predicao_bayesiano(novos_preditores)
+  valores_preditos_json <- fromJSON("saidas/predicoes.json")
   grafico_bayesiano(preditores, dados[[resposta]], valores_preditos_json)
 }else{
   modelo_robusto(resposta, preditores)
   predicao_robusto(novos_preditores)
+  valores_preditos_json <- fromJSON("saidas/predicoes.json")
   grafico_robusto(dados[[resposta]], valores_preditos_json)
 }
 
