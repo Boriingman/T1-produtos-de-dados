@@ -1,0 +1,171 @@
+---
+output: github_document
+---
+
+# Introdução
+
+Este projeto tem como objetivo a criação de um sistema de predição baseado em diferentes algoritmos de regressão. O sistema permite ao usuário treinar modelos preditivos utilizando conjuntos de dados fornecidos e, em seguida, gerar predições para novas observações.
+
+Os algoritmos implementados incluem métodos como regressão linear simples e LASSO, garantindo flexibilidade para o usuário escolher o modelo que melhor se adequa ao seu problema.
+
+### Visão Geral do Fluxo de Trabalho
+
+O fluxo de trabalho do projeto está dividido em quatro etapas principais:
+
+1.  **Configuração**: O usuário especifica os arquivos de entrada, como o conjunto de dados para treinamento e as observações para predição, por meio de um arquivo `configuracao.yaml`. Neste arquivo, também são definidos os parâmetros do modelo a ser treinado, como o método de regressão e as variáveis preditoras.
+
+2.  **Treinamento do Modelo**: A partir do conjunto de dados de treinamento fornecido pelo usuário, o sistema treina um modelo preditivo, que pode ser uma regressão linear robusta ou bayesiana. O modelo treinado é salvo no formato `.rds` para ser utilizado posteriormente.
+
+3.  **Predições**: Após o treinamento, o sistema utiliza o modelo ajustado para gerar predições com base em novas observações, fornecidas em um arquivo `.json`. Os resultados das predições são salvos também em formato `.json`.
+
+4.  **Análise Gráfica**: Finalmente, o sistema gera um gráfico comparando os valores preditos pelo modelo e os valores reais do conjunto de dados de treinamento. As predições feitas para novas observações também são destacadas no gráfico. O gráfico é salvo em formato `.pdf`.
+
+# Instalação e Requisitos
+
+Este projeto depende de alguns pacotes do R que devem ser instalados antes de executar o produto. Abaixo estão listados os pacotes necessários:
+
+### Pacotes Necessários:
+
+-   `usethis`
+-   `yaml`
+-   `readr`
+-   `glue`
+-   `dplyr`
+-   `lrgs`
+-   `coda`
+-   `jsonlite`
+-   `MASS`
+-   `ggplot2`
+
+Para instalar os pacotes, basta executar o arquivo `main.R`.
+
+# Configurações
+
+O arquivo `configuracao.yaml` desempenha um papel central no funcionamento do projeto, permitindo que o usuário especifique parâmetros fundamentais para a execução do sistema de predição. Através deste arquivo, o usuário define quais dados serão usados, o modelo preditivo escolhido, os preditores e a variável resposta, além de outros parâmetros que controlam a execução dos modelos de regressão robusta ou bayesiana.
+
+### Estrutura do Arquivo `configuracao.yaml`
+
+Abaixo está um exemplo de como o arquivo de configuração pode ser estruturado:
+
+``` yaml
+tabela: dados_bsa.csv        # Conjunto de dados de treinamento (arquivo .csv)
+dados: novas_observacoes.json  # Arquivo JSON com as observações para predição
+modelo: robusto               # Método de predição a ser usado: 'robusto' ou 'bayesiano'
+preditores:                   # Lista de colunas do conjunto de dados que serão usadas como preditores
+  - professores
+  - despesa_por_aluno
+resposta: media_notas         # Variável resposta (coluna a ser predita)
+beta_start_1: 0               # Valor inicial para o coeficiente beta_start_1 (utilizado no modelo bayesiano)
+beta_start_2: -3              # Valor inicial para o coeficiente beta_start_2 (utilizado no modelo bayesiano)
+sigma2_start: 1               # Valor inicial para a variância sigma^2 (para regressão bayesiana)
+sigma_prior_scale: 0.01       # Escala do prior para sigma (para regressão bayesiana)
+sigma_prior_dof: 0.01         # Graus de liberdade do prior para sigma (para regressão bayesiana)
+M: null                       # Parâmetro opcional (usado em contextos mais avançados)
+Nsamples: 1000                # Número de amostras para o modelo bayesiano
+Ngauss: 1                     # Número de gaussianas (em algumas distribuições bayesianas)
+dirichlet: false              # Indica se o modelo usa uma distribuição Dirichlet
+M_inv: null                   # Inversa de M (opcional)
+intercept: true               # Inclui o intercepto no modelo
+trace: "bsmt"                 # Nome para a rastreabilidade do modelo (utilizado para logs)
+fix: "xy"                     # Parâmetro adicional usado no controle da regressão 
+```
+
+### Descrição dos Parâmetros
+
+-   **tabela**: Especifica o nome do arquivo `.csv` contendo o conjunto de dados de treinamento. Este arquivo deve estar localizado na pasta `entradas`.
+-   **dados**: Nome do arquivo `.json` que contém as novas observações a serem preditas.
+-   **modelo**: Define o tipo de modelo a ser utilizado. Pode ser `robusto` (para regressão linear robusta) ou `bayesiano` (para regressão bayesiana).
+-   **preditores**: Lista das variáveis preditoras (colunas) no conjunto de dados de treinamento que serão usadas para ajustar o modelo.
+-   **resposta**: Nome da variável resposta (a variável que o modelo tentará prever).
+-   **beta_start_1, beta_start_2**: Valores iniciais dos parâmetros beta no modelo bayesiano.
+-   **sigma2_start**: Valor inicial da variância (`sigma^2`) para o modelo bayesiano.
+-   **sigma_prior_scale, sigma_prior_dof**: Parâmetros que definem os priors do modelo bayesiano, controlando a variância da distribuição.
+-   **Nsamples**: Número de amostras a serem geradas no modelo bayesiano.
+-   **intercept**: Define se o modelo incluirá um intercepto.
+-   **trace, fix**: Parâmetros adicionais que podem ser usados para controlar rastreamento de logs e ajustes no modelo.
+
+# Execução do Produto
+
+Para executar o projeto e gerar os resultados esperados, utilize o script principal `main.R`. Esse script integra todas as etapas do projeto, desde o treinamento dos modelos até a geração de predições e gráficos.
+
+### Como Executar
+
+1.  Certifique-se de que todos os arquivos necessários estão nas pastas corretas:
+
+    -   O conjunto de dados de treinamento no formato `.csv` deve estar na pasta `entradas`.
+    -   As novas observações para predição no formato `.json` também devem estar na pasta `entradas`.
+    -   O arquivo `configuracao.yaml` deve conter as configurações corretas para o modelo e o caminho para os arquivos.
+
+2.  Execute o script `main.R` no RStudio ou via terminal com o seguinte comando:
+
+    ``` bash
+    Rscript main.R
+    ```
+
+    ### Saída Esperada
+
+A execução do script gera os seguintes arquivos na pasta `saidas`:
+
+-   **modelo_bayesiano.rds**: Contém o modelo de regressão bayesiana treinado. Este arquivo pode ser carregado e reutilizado em execuções futuras.
+-   **modelo_robusto.rds**: Contém o modelo de regressão linear robusta treinado. Similarmente, pode ser reutilizado posteriormente.
+-   **predicoes.json**: Arquivo JSON com as predições geradas a partir do modelo treinado para as novas observações fornecidas no arquivo `novas_observacoes.json`.
+-   **grafico.pdf**: Gráfico gerado comparando os valores preditos e observados no conjunto de dados de treinamento, com destaque para as predições feitas para as novas observações.
+
+### Exemplo de Gráfico
+
+O arquivo `grafico.pdf` exibirá um gráfico onde: O eixo **x** representa os valores preditos para o conjunto de dados de treinamento. O eixo **y** representa os valores observados. Linhas verticais destacam os valores preditos para as novas observações.
+
+O gráfico será salvo no formato PDF na pasta `saidas` com o nome `grafico.pdf`.
+
+### Considerações Finais
+
+Ao seguir as instruções acima, o sistema processará todas as etapas do projeto, gerando os modelos treinados, as predições e o gráfico com os resultados. Certifique-se de que todos os arquivos de entrada estão corretamente configurados e que o arquivo `configuracao.yaml` contém os parâmetros adequados para o seu problema.
+
+# Resultados
+
+### Arquivos de saída esperados
+
+Após a execução dos modelos de regressão linear robusta e regressão bayesiana, os seguintes arquivos de saída são gerados:
+
+#### 1. Arquivo JSON com as predições
+
+As predições geradas pelos modelos são salvas em um arquivo no formato JSON. Este arquivo contém os valores previstos para as novas observações fornecidas no arquivo `novas_observacoes.json`. O formato de saída é o seguinte:
+
+``` json
+[
+    {"predicao": 123.45},
+    {"predicao": 678.90}
+]
+```
+
+-   **Nome do arquivo:** `predicoes.json`
+-   **Localização:** Pasta `saidas`
+
+#### 2. Gráfico gerado em PDF
+
+Um gráfico de dispersão é gerado para visualizar a relação entre os valores observados no conjunto de dados de treinamento e os valores preditos pelos modelos. As linhas verticais no gráfico destacam os valores previstos para as novas observações presentes no arquivo JSON.
+
+-   **Eixo X:** Valores preditos pelos modelos.
+-   **Eixo Y:** Valores observados no conjunto de treinamento.
+-   **Formato:** PDF
+-   **Nome do arquivo:** `grafico.pdf`
+-   **Localização:** Pasta `saidas`
+
+#### 3. Arquivo .rds com o modelo treinado
+
+Após o treinamento dos modelos, os objetos resultantes (modelos ajustados) são salvos em arquivos `.rds` para reuso futuro. Cada arquivo contém um dos modelos treinados:
+
+-   **Modelo de regressão robusta:** Salvo como `modelo_robusto.rds`
+-   **Modelo de regressão bayesiana:** Salvo como `modelo_bayesiano.rds`
+-   **Localização:** Pasta `saidas`
+
+### Detalhes das saídas
+
+Os resultados gerados são dependentes das configurações definidas no arquivo `configuracao.yaml`. A seguir estão os parâmetros utilizados para o treinamento dos modelos:
+
+-   **Modelo:** `robusto` (para regressão robusta) ou `bayesiano` (para regressão bayesiana).
+-   **Variáveis preditoras:** `professores`, `despesa_por_aluno`.
+-   **Variável resposta:** `media_notas`.
+-   **Parâmetros de inicialização:** `beta_start_1`, `beta_start_2`, `sigma2_start`.
+
+Com base nessas definições, os arquivos gerados refletem as predições e o comportamento dos modelos em relação aos dados fornecidos.

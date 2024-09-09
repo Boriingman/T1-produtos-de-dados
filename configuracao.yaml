@@ -1,0 +1,20 @@
+tabela: dados_bsa.csv # base de dados
+dados: novas_observacoes.json # dados a serem preditos
+modelo: robusto # bayesiano ou robusto
+preditores:
+  - professores
+  - despesa_por_aluno
+resposta: media_notas
+beta_start_1: 0   # Valor inicial para beta_start_1
+beta_start_2: -3  # Valor inicial para beta_start_2
+sigma2_start: 1
+sigma_prior_scale: 0.01
+sigma_prior_dof: 0.01
+M: null
+Nsamples: 1000
+Ngauss: 1
+dirichlet: false
+M_inv: null
+intercept: true
+trace: "bsmt"
+fix: "xy"

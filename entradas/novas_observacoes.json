@@ -1,0 +1,10 @@
+[
+  {
+    "professores": 500,
+    "despesa_por_aluno": 10000
+  },
+  {
+    "professores": 55,
+    "despesa_por_aluno": 3000
+  }
+]
