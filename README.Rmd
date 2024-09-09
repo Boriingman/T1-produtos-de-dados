@@ -1,7 +1,3 @@
----
-output: github_document
----
-
 # Introdução
 
 Este projeto tem como objetivo a criação de um sistema de predição baseado em diferentes algoritmos de regressão. O sistema permite ao usuário treinar modelos preditivos utilizando conjuntos de dados fornecidos e, em seguida, gerar predições para novas observações.
